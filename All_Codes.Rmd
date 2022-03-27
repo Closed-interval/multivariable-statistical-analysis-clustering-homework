@@ -1,0 +1,395 @@
+---
+title: "all_code"
+author: "saint"
+date: "2022/3/27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(factoextra)
+library(cluster)
+library(ggplot2)
+library(ggdendro)
+##数据读取
+data = read.csv("World Happiness Report 2022.csv")
+
+##数据标准化
+set = data[,c(3,6,7,8,9)]
+rownames(set)=data[,2]
+set = scale(set)
+n = length(set[,1])
+
+##Hopkins统计量计算与有序相异图绘制
+hopkins = get_clust_tendency(set,10)
+hopkins$hopkins_stat
+hopkins$plot
+
+##肘图
+fviz_nbclust(set, kmeans, method = "wss")
+
+##CH统计量
+ch = rep(0,9)
+for(i in c(1:9)){
+  k=i
+ km = kmeans(set,k)
+ ch[i]=km$betweenss/(k-1)/km$withinss*(n-k)
+}
+chset = data.frame("CH"=ch[2:9],"k" = c(2:9))
+ggplot(chset,aes(k,CH))+geom_line(color = "skyblue")+
+  geom_point(size = 3,color = "skyblue")+
+  geom_vline(xintercept = 8,linetype="dotdash",color = "skyblue",size=1)+
+  scale_x_continuous(breaks = c(2:9))+
+  xlab("Number of clusters k")+
+  theme_bw()
+
+##Gap统计量
+gap_stat = clusGap(set, FUN = kmeans, nstart = 25, K.max = 10, B = 300)
+fviz_gap_stat(gap_stat)
+
+##kmeans聚类
+km = kmeans(set,4)
+
+##系统聚类(ward法)
+d <- dist(set,method = "euclidean",diag = T,upper = T)#根据欧氏距离求相似矩阵
+hc <- hclust(d,method = "ward.D2")#采用ward法进行系统聚类
+
+##kmeans可视化
+fviz_cluster(km, data = set,
+             ellipse.type = "euclid",
+             star.plot = TRUE, 
+             repel = TRUE,
+             ggtheme = theme_minimal()
+)
+
+##系统聚类法可视化所需的三个函数
+hdcenter.plot <- function(hd,data,k,method = "euclidean",
+                          size1=3,size2=0.1,alpha1=0.8,
+                          alpha2=0.3,if.centerpoint=T,
+                          if.label = T,names = "rownames",max.overlaps = 6){
+  ##hd为hclust聚类结果,data为数据集(data.frame),K为所需展示的类数,method为距离度量方式,size1为点的大小,size2为线的粗细（不绘制中心点时无效）,alpha1为点的不透明度，alpha2为线圈的不透明度，if.centerpoint用于控制是否绘制中心点与箭头,if.label控制是否绘制文字标签,names为每个点的文字标签（默认为数据集的行名,若未设置行名，则默认为行数）,max.overlap控制重叠标签的容忍度)
+  library(ggplot2)
+  library(ggrepel)##该包为了解决标签点重叠问题
+  if(names == "rownames"){
+    names =rownames(data) 
+  }
+  data = scale(data)##标准化
+  dist.r = dist(data,method=method)
+  result = cutree(hd,k=k)
+  
+  ##求主成分
+  temp = cmdscale(dist.r,k=2)
+  x = temp[,1]
+  y = temp[,2]
+  hdset = data.frame(x,y,"cluster"=factor(result),"names"=names)
+  n = length(hdset["x"])
+  ##如果要绘制带中心点的图，则求中心点
+  if(if.centerpoint == T){
+    
+    ##求各个类的中心点
+    center = data.frame("x"=rep(0,k),'y'=rep(0,k),'cluster'=c(1:k),"names"=c(1:k))#创建初始化中心点
+    for(i in c(1:k)){
+      center[i,"x"]=mean(hdset[which(hdset$cluster == i),1])
+      center[i,"y"]=mean(hdset[which(hdset$cluster == i),2])
+    }
+    
+    ##合并数据集
+    center.hdset = data.frame("center.x"=rep(NA,n),"center.y"=rep(NA,n))
+    for(i in c(1:k)){
+      center.hdset[which(hdset$cluster == i),"center.x"]=center[which(center$cluster ==i),"x"]
+      center.hdset[which(hdset$cluster == i),"center.y"]=center[which(center$cluster ==i),"y"]
+    }
+    center.hdset = cbind(hdset,center.hdset)
+  }else{
+    center.hdset = hdset
+  }
+  
+  
+  ##不含中心点的图
+  pic <- ggplot(center.hdset,aes(x,y))+
+    geom_point(aes(color = cluster,shape = cluster),size = size1,alpha = alpha1)+
+    theme_bw()+
+    stat_ellipse(aes(color = cluster,fill=cluster),type="euclid",geom = 'polygon',alpha=alpha2)
+  
+  ##绘制包含中心点的图
+  if(if.centerpoint == T){
+    
+    ##绘图
+    pic <- pic+
+      geom_segment(aes(xend=center.x,yend=center.y,color=cluster),
+                   size = size2
+      )
+  }
+  
+  ##绘制包含标签的图
+  if(if.label == T){
+    pic = pic+
+      geom_text_repel(aes(label=names,color=cluster),max.overlaps = max.overlaps)
+  }
+  
+  ##图的细节调整（坐标轴）
+  pic = pic+
+    xlab("Dim1")+
+    ylab("Dim2")
+  return(pic)
+}
+   #下面两个函数源于网络
+dendro_data_k <- function(hc, k) {
+  
+  hcdata    <-  ggdendro::dendro_data(hc, type = "rectangle")
+  seg       <-  hcdata$segments
+  labclust  <-  cutree(hc, k)[hc$order]
+  segclust  <-  rep(0L, nrow(seg))
+  heights   <-  sort(hc$height, decreasing = TRUE)
+  height    <-  mean(c(heights[k], heights[k - 1L]), na.rm = TRUE)
+  
+  for (i in 1:k) {
+    xi      <-  hcdata$labels$x[labclust == i]
+    idx1    <-  seg$x    >= min(xi) & seg$x    <= max(xi)
+    idx2    <-  seg$xend >= min(xi) & seg$xend <= max(xi)
+    idx3    <-  seg$yend < height
+    idx     <-  idx1 & idx2 & idx3
+    segclust[idx] <- i
+  }
+  
+  idx                    <-  which(segclust == 0L)
+  segclust[idx]          <-  segclust[idx + 1L]
+  hcdata$segments$clust  <-  segclust
+  hcdata$segments$line   <-  as.integer(segclust < 1L)
+  hcdata$labels$clust    <-  labclust
+  
+  hcdata
+}
+set_labels_params <- function(nbLabels,
+                              direction = c("tb", "bt", "lr", "rl"),
+                              fan       = FALSE) {
+  if (fan) {
+    angle       <-  360 / nbLabels * 1:nbLabels + 90
+    idx         <-  angle >= 90 & angle <= 270
+    angle[idx]  <-  angle[idx] + 180
+    hjust       <-  rep(0, nbLabels)
+    hjust[idx]  <-  1
+  } else {
+    angle       <-  rep(0, nbLabels)
+    hjust       <-  0
+    if (direction %in% c("tb", "bt")) { angle <- angle + 45 }
+    if (direction %in% c("tb", "rl")) { hjust <- 1 }
+  }
+  list(angle = angle, hjust = hjust, vjust = 0.5)
+}
+plot_ggdendro <- function(hcdata,
+                          direction   = c("lr", "rl", "tb", "bt"),
+                          fan         = FALSE,
+                          scale.color = NULL,
+                          branch.size = 1,
+                          label.size  = 3,
+                          nudge.label = 0.01,
+                          expand.y    = 0.1) {
+  
+  direction <- match.arg(direction) # if fan = FALSE
+  ybreaks   <- pretty(segment(hcdata)$y, n = 5)
+  ymax      <- max(segment(hcdata)$y)
+  
+  ## branches
+  p <- ggplot() +
+    geom_segment(data         =  segment(hcdata),
+                 aes(x        =  x,
+                     y        =  y,
+                     xend     =  xend,
+                     yend     =  yend,
+                     linetype =  factor(line),
+                     colour   =  factor(clust)),
+                 lineend      =  "round",
+                 show.legend  =  FALSE,
+                 size         =  branch.size)
+  
+  ## orientation
+  if (fan) {
+    p <- p +
+      coord_polar(direction = -1) +
+      scale_x_continuous(breaks = NULL,
+                         limits = c(0, nrow(label(hcdata)))) +
+      scale_y_reverse(breaks = ybreaks)
+  } else {
+    p <- p + scale_x_continuous(breaks = NULL)
+    if (direction %in% c("rl", "lr")) {
+      p <- p + coord_flip()
+    }
+    if (direction %in% c("bt", "lr")) {
+      p <- p + scale_y_reverse(breaks = ybreaks)
+    } else {
+      p <- p + scale_y_continuous(breaks = ybreaks)
+      nudge.label <- -(nudge.label)
+    }
+  }
+  
+  # labels
+  labelParams <- set_labels_params(nrow(hcdata$labels), direction, fan)
+  hcdata$labels$angle <- labelParams$angle
+  
+  p <- p +
+    geom_text(data        =  label(hcdata),
+              aes(x       =  x,
+                  y       =  y,
+                  label   =  label,
+                  colour  =  factor(clust),
+                  angle   =  angle),
+              vjust       =  labelParams$vjust,
+              hjust       =  labelParams$hjust,
+              nudge_y     =  ymax * nudge.label,
+              size        =  label.size,
+              show.legend =  FALSE)
+  
+  # colors and limits
+  if (!is.null(scale.color)) {
+    p <- p + scale_color_manual(values = scale.color)
+  }
+  
+  ylim <- -round(ymax * expand.y, 1)
+  p    <- p + expand_limits(y = ylim)
+  
+  p
+}
+
+##ward法可视化
+hdcenter.plot(hc,set,4,method = "euclidean")
+ggsave("ward.svg")
+  #第一种风格的图，不过最后文章里未使用
+hcdata <- dendro_data_k(hc, 4)
+p <- plot_ggdendro(hcdata,
+                   direction   = "lr",
+                   expand.y    = 0.2)
+p
+
+ #第二种风格的图，即报告中使用的图
+plot_ggdendro(hcdata,
+                   direction   = "tb",
+                   label.size  = 1.5,
+                   branch.size = 0.5,
+                   expand.y    = 0.2)+
+  theme_void() + expand_limits(x = c(-1, 32))
+
+##系统聚类-最短距离及可视化
+hc <- hclust(d,method = "single")
+hcdata <- dendro_data_k(hc, 4)
+hdcenter.plot(hc,set,4,method = "euclidean",size2 = 0.5)
+ggsave("single.svg")
+plot_ggdendro(hcdata,
+                   direction   = "tb",
+                   label.size  = 1.5,
+                   branch.size = 0.5,
+                   expand.y    = 0.2)+
+  theme_void() + expand_limits(x = c(-1, 32))
+
+#系统聚类-中间距离及可视化
+hc <- hclust(d,method = "median")
+hcdata <- dendro_data_k(hc, 4)
+hdcenter.plot(hc,set,4,method = "euclidean",size2 = 0.5)
+ggsave("median.svg")
+plot_ggdendro(hcdata,
+                   direction   = "tb",
+                   label.size  = 1.5,
+                   branch.size = 0.5,
+                   expand.y    = 0.2)+
+  theme_void() + expand_limits(x = c(-1, 32))
+
+#系统聚类-最长距离及可视化
+hc <- hclust(d,method = "complete")
+hcdata <- dendro_data_k(hc, 4)
+hdcenter.plot(hc,set,4,method = "euclidean",size2 = 0.5)
+ggsave("complete.svg")
+plot_ggdendro(hcdata,
+                   direction   = "tb",
+                   label.size  = 1.5,
+                   branch.size = 0.5,
+                   expand.y    = 0.2)+
+  theme_void() + expand_limits(x = c(-1, 32))
+
+##聚合系数可视化
+par = read.csv("聚合系数.csv")
+colnames(par) = c("x","y")
+ggplot(par,aes(x = x,y = y))+geom_line(color = "#1f77b4",size = 0.75)+
+  theme_bw()+xlab("分类数")+ylab("聚合系数")
+
+
+```
+下面是描述统计部分代码
+```{r}
+library(ggpubr)
+set = data[,c(3,6,7,8,9)]
+colnames(set)=c("Happiness_score","Dystopia",	"GDP_per_capita","Social_support",	"Healthy_life_expectancy")
+set = cbind(set,data.frame("rank" = c(1:length(set$Happiness_score))))
+##计算平均数
+happiness_bar = mean(set$Happiness_score)
+dystopia_bar = mean(set$Dystopia)
+##绘图
+happiness = ggplot(set,aes(x = Happiness_score))+
+  geom_histogram(aes(y =..density..),color = "#88ada6" , fill = "skyblue", alpha = 0.45,bins=13)+
+  geom_vline(xintercept  = happiness_bar,linetype="dotdash",color = "green",size=1)+ #绘制竖直线
+  geom_text(data = data.frame("name" = c("平均数"),"x" = c(happiness_bar),y = 0.4,"font"=c("bold")),
+            aes(x = x,y = y,label = name,fontface = font),size = 3)+
+  geom_density(color = "skyblue",size = 0.8)+
+  xlab("")+
+  theme_bw()
+dystopia = ggplot(set,aes(x = Dystopia))+
+  geom_histogram(aes(y =..density..),color = "#88ada6" , fill = "skyblue", alpha = 0.45,bins=13)+
+  geom_density(color = "skyblue",size = 0.8)+
+  geom_vline(xintercept  = dystopia_bar,linetype="dotdash",color = "green",size=1)+
+  geom_text(data = data.frame("name" = c("平均数"),"x" = c(dystopia_bar),y = 1.07,"font"=c("bold")),
+            aes(x = x,y = y,label = name,fontface = font),size = 3)+
+  xlab("")+
+  theme_bw()
+ggarrange(happiness,dystopia,labels = c("Happiness","Dystopia"),nrow = 1,ncol=2,label.y = 1,font.label=list(size = 12,color = "red",face = "bold",family = NULL))
+
+ggplot(set,aes(GDP_per_capita,Healthy_life_expectancy))+geom_point(aes(color = rank))+
+  scale_colour_gradient(low = "red", high = "green")+
+  xlab("GDP per capita")+ylab("Healthy life expectancy")+theme_bw()
+
+ggplot(set,aes(x = "Social support",y = Social_support))+
+  geom_jitter(width = 0.44,color = "pink")+geom_boxplot(width = 0.433,alpha = 0.1,color = "darkorchid1")+xlab("")+ylab("")+
+  theme_bw()
+
+```
+下面是绘制地图的代码
+```{r,warning=FALSE}
+library(maps)
+world_map = map_data("world")
+
+world_map[which(world_map$subregion == "Hong Kong"),]$region = "Hong Kong"
+
+test = rep(0,length(data[,1]))
+for(i in c(1:length(data[,1]))){
+  if(data$Country[i] %in% world_map$region){
+    test[i] = 1
+  }
+}
+#规范国家名
+data2 = data
+
+data2$Country[which(test == 0)] = c("Luxembourg","USA","UK","Czech Republic","Taiwan","Guatemala","Kuwait","Belarus","Turkmenistan","Cyprus","Hong Kong","Libya", "Azerbaijan","Gambia","Liberia","Republic of Congo","Niger" , "Comoros","Palestine" , "Swaziland","Madagascar","Chad","Yemen","Mauritania","Lesotho" ,"Botswana","Rwanda")
+
+
+test2 = rep(0,length(data2[,1]))
+for(i in c(1:length(data2[,1]))){
+  if(data2$Country[i] %in% world_map$region){
+    test2[i] = 1
+  }
+}
+worldcluster = as.data.frame(cbind(data2$Country,km$cluster))
+world_map = cbind(world_map,data.frame("cluster" = rep(NA,length(world_map$long))))
+##添加分组结果的标签
+for(i in c(1:length(world_map$long))){
+  world_map$cluster[i] = if(world_map$region[i] %in% worldcluster$V1){worldcluster[which(worldcluster$V1 == world_map$region[i]),"V2"]}else{NA}
+  
+}
+##绘制地图
+ggplot(world_map, aes(x = long, y = lat, group = group)) +
+  geom_polygon(aes(fill=cluster),alpha = 0.6) +
+  ylim(c(-54,84))+xlim(c(-170,195))+
+  theme_bw()+
+  scale_fill_discrete(labels=c("1", "2", "3","4","No Data"))
+```
+
