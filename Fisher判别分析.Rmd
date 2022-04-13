@@ -158,4 +158,13 @@ print(
 ```
 
 
+Bayes判别法
+```{r}
+library(klaR)
+c <- read.csv("kmeans+data.csv", header=T) #聚类数据结果
+class <- as.factor(c[,8]) #将聚类结果转化为因子变量
+data <- scale(c[,3:7])#数据标准化
+P <- NaiveBayes(data,class)
+predict(P)
+```
 

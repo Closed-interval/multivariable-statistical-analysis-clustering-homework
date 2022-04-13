@@ -1,0 +1,147 @@
+COUNTRY,country,Happiness score,Dystopia (1.83) + residual,Explained by: GDP per capita,Explained by: Social support,Explained by: Healthy life expectancy,V2
+Finland,Finland,7.821,2.518,1.892,1.258,0.775,4
+Denmark,Denmark,7.636,2.226,1.953,1.243,0.777,4
+Iceland,Iceland,7.557,2.32,1.936,1.32,0.803,4
+Switzerland,Switzerland,7.512,2.153,2.026,1.226,0.822,4
+Netherlands,Netherlands,7.415,2.137,1.945,1.206,0.787,4
+Luxembourg*,Luxembourg,7.404,2.042,2.209,1.155,0.79,4
+Sweden,Sweden,7.384,2.003,1.92,1.204,0.803,4
+Norway,Norway,7.365,1.925,1.997,1.239,0.786,4
+Israel,Israel,7.364,2.634,1.826,1.221,0.818,4
+New Zealand,New Zealand,7.2,1.954,1.852,1.235,0.752,4
+Austria,Austria,7.163,2.148,1.931,1.165,0.774,4
+Australia,Australia,7.162,2.011,1.9,1.203,0.772,4
+Ireland,Ireland,7.041,1.743,2.129,1.166,0.779,4
+Germany,Germany,7.034,2.142,1.924,1.088,0.776,4
+Canada,Canada,7.025,1.924,1.886,1.188,0.783,4
+United States,USA,6.977,2.214,1.982,1.182,0.628,4
+United Kingdom,UK,6.943,1.967,1.867,1.143,0.75,4
+Czechia,Czech Republic,6.92,2.263,1.815,1.26,0.715,4
+Belgium,Belgium,6.805,2.283,1.907,1.106,0.764,4
+France,France,6.687,1.895,1.863,1.219,0.808,4
+Bahrain,Bahrain,6.647,2.092,1.854,1.029,0.625,4
+Slovenia,Slovenia,6.63,1.885,1.81,1.249,0.769,4
+Costa Rica,Costa Rica,6.582,2.346,1.584,1.054,0.744,4
+United Arab Emirates,United Arab Emirates,6.576,1.809,1.998,0.98,0.633,4
+Saudi Arabia,Saudi Arabia,6.523,2.075,1.87,1.092,0.577,4
+Taiwan Province of China,Taiwan,6.512,2.002,1.897,1.095,0.733,4
+Singapore,Singapore,6.48,0.932,2.149,1.127,0.851,4
+Romania,Romania,6.477,2.446,1.719,1.006,0.655,4
+Spain,Spain,6.476,1.893,1.808,1.211,0.808,4
+Uruguay,Uruguay,6.474,1.974,1.615,1.18,0.672,4
+Italy,Italy,6.467,2.222,1.834,1.052,0.801,4
+Kosovo,Kosovo,6.455,2.631,1.362,0.949,0.569,2
+Malta,Malta,6.447,1.631,1.838,1.169,0.789,4
+Lithuania,Lithuania,6.446,2.153,1.804,1.204,0.659,4
+Slovakia,Slovakia,6.391,2.094,1.736,1.232,0.707,4
+Estonia,Estonia,6.341,1.442,1.793,1.232,0.728,4
+Panama,Panama,6.309,2.086,1.715,1.107,0.709,4
+Brazil,Brazil,6.293,2.361,1.462,1.044,0.615,2
+Guatemala*,Guatemala,6.262,2.746,1.274,0.831,0.522,2
+Kazakhstan,Kazakhstan,6.234,1.86,1.668,1.22,0.611,4
+Cyprus,Cyprus,6.221,2.044,1.815,0.909,0.819,4
+Latvia,Latvia,6.18,1.923,1.732,1.221,0.637,4
+Serbia,Serbia,6.178,2.031,1.55,1.086,0.658,2
+Chile,Chile,6.172,2.04,1.651,1.08,0.748,4
+Nicaragua,Nicaragua,6.165,2.418,1.105,1.029,0.617,2
+Mexico,Mexico,6.128,2.239,1.552,0.886,0.623,2
+Croatia,Croatia,6.125,1.884,1.705,1.183,0.709,4
+Poland,Poland,6.123,1.693,1.758,1.174,0.712,4
+El Salvador,El Salvador,6.12,2.514,1.265,0.768,0.607,2
+Kuwait*,Kuwait,6.106,1.621,1.904,0.983,0.747,4
+Hungary,Hungary,6.086,1.812,1.748,1.233,0.668,4
+Mauritius,Mauritius,6.071,1.969,1.591,1.116,0.568,2
+Uzbekistan,Uzbekistan,6.063,1.913,1.219,1.092,0.6,2
+Japan,Japan,6.039,1.487,1.835,1.089,0.866,4
+Honduras,Honduras,6.022,2.611,1.111,0.885,0.555,2
+Portugal,Portugal,6.016,1.691,1.76,1.078,0.777,4
+Argentina,Argentina,5.967,1.891,1.592,1.102,0.662,2
+Greece,Greece,5.948,2.119,1.703,0.98,0.774,4
+South Korea,South Korea,5.935,1.656,1.851,0.886,0.841,4
+Philippines,Philippines,5.904,2.283,1.268,0.912,0.514,2
+Thailand,Thailand,5.891,1.6,1.535,1.096,0.697,2
+Moldova,Moldova,5.857,2.142,1.417,1.008,0.597,2
+Jamaica,Jamaica,5.85,2.164,1.296,1.045,0.646,2
+Kyrgyzstan,Kyrgyzstan,5.828,2.087,1.069,1.109,0.638,2
+Belarus*,Belarus,5.821,1.811,1.562,1.157,0.629,2
+Colombia,Colombia,5.781,1.971,1.452,0.929,0.72,2
+Bosnia and Herzegovina,Bosnia and Herzegovina,5.768,1.869,1.468,1.068,0.665,2
+Mongolia,Mongolia,5.761,1.999,1.393,1.197,0.467,2
+Dominican Republic,Dominican Republic,5.737,1.751,1.538,1.003,0.577,2
+Malaysia,Malaysia,5.711,1.471,1.689,0.938,0.62,2
+Bolivia,Bolivia,5.6,2.107,1.256,0.88,0.555,2
+China,China,5.585,1.516,1.508,0.958,0.705,2
+Paraguay,Paraguay,5.578,1.555,1.409,1.13,0.624,2
+Peru,Peru,5.559,1.89,1.397,0.865,0.735,2
+Montenegro,Montenegro,5.547,1.619,1.573,1.023,0.659,2
+Ecuador,Ecuador,5.533,1.866,1.352,0.879,0.708,2
+Vietnam,Vietnam,5.485,1.735,1.252,0.932,0.611,2
+Turkmenistan*,Turkmenistan,5.474,1.16,1.484,1.319,0.516,2
+North Cyprus*,Cyprus,5.467,1.078,1.815,0.888,0.819,2
+Russia,Russia,5.459,1.494,1.685,1.095,0.586,2
+Hong Kong S.A.R. of China,Hong Kong,5.425,0.642,1.957,0.954,0.942,4
+Armenia,Armenia,5.399,1.654,1.434,0.82,0.668,2
+Tajikistan,Tajikistan,5.377,1.895,0.966,1.005,0.518,2
+Nepal,Nepal,5.377,2.224,0.984,0.784,0.499,3
+Bulgaria,Bulgaria,5.371,1.235,1.625,1.163,0.64,2
+Libya*,Libya,5.33,1.544,1.476,0.943,0.606,2
+Indonesia,Indonesia,5.24,1.3,1.382,0.883,0.539,2
+Ivory Coast,Ivory Coast,5.235,2.652,1.094,0.442,0.322,3
+North Macedonia,North Macedonia,5.199,1.461,1.505,0.863,0.637,2
+Albania,Albania,5.199,1.718,1.439,0.646,0.719,2
+South Africa,South Africa,5.194,1.742,1.425,1.088,0.361,2
+Azerbaijan*,Azerbaijan,5.173,1.098,1.458,1.093,0.56,2
+Gambia*,Gambia,5.164,2.531,0.785,0.621,0.369,3
+Bangladesh,Bangladesh,5.155,1.967,1.06,0.614,0.581,3
+Laos,Laos,5.14,1.709,1.239,0.654,0.479,2
+Algeria,Algeria,5.122,1.744,1.363,0.97,0.643,2
+Liberia*,Liberia,5.122,2.844,0.636,0.67,0.309,3
+Ukraine,Ukraine,5.084,1.331,1.411,1.081,0.583,2
+Congo,Republic of Congo,5.075,2.658,0.95,0.405,0.355,3
+Morocco,Morocco,5.06,2.405,1.208,0.268,0.565,3
+Mozambique,Mozambique,5.048,2.641,0.578,0.66,0.191,3
+Cameroon,Cameroon,5.048,2.469,0.968,0.672,0.317,3
+Senegal,Senegal,5.046,2.419,0.933,0.53,0.447,3
+Niger*,Niger,5.003,2.667,0.57,0.56,0.326,3
+Georgia,Georgia,4.973,1.583,1.467,0.612,0.595,2
+Gabon,Gabon,4.958,1.892,1.459,0.738,0.396,2
+Iraq,Iraq,4.941,1.894,1.289,0.682,0.554,2
+Venezuela,Venezuela,4.925,2.79,0,0.968,0.578,3
+Guinea,Guinea,4.891,2.538,0.848,0.566,0.275,3
+Iran,Iran,4.888,1.427,1.41,0.741,0.642,2
+Ghana,Ghana,4.872,1.972,1.112,0.595,0.409,3
+Turkey,Turkey,4.744,1.059,1.707,0.865,0.702,2
+Burkina Faso,Burkina Faso,4.67,2.313,0.779,0.565,0.32,3
+Cambodia,Cambodia,4.64,1.41,1.019,0.732,0.505,1
+Benin,Benin,4.623,2.458,0.932,0.064,0.335,3
+Comoros*,Comoros,4.609,2.304,0.899,0.476,0.424,3
+Uganda,Uganda,4.603,1.842,0.777,0.875,0.418,3
+Nigeria,Nigeria,4.552,1.784,1.079,0.732,0.3,3
+Kenya,Kenya,4.543,1.661,1.032,0.605,0.401,3
+Tunisia,Tunisia,4.516,1.54,1.35,0.596,0.656,2
+Pakistan,Pakistan,4.516,1.94,1.049,0.413,0.374,3
+Palestinian Territories*,Palestine,4.483,1.368,1.148,0.957,0.521,1
+Mali,Mali,4.479,2.373,0.792,0.483,0.311,3
+Namibia,Namibia,4.459,1.414,1.292,0.877,0.354,1
+"Eswatini, Kingdom of*",Swaziland,4.396,1.688,1.274,0.786,0.197,1
+Myanmar,Myanmar,4.394,0.877,1.038,0.829,0.491,1
+Sri Lanka,Sri Lanka,4.362,0.595,1.415,0.934,0.66,1
+Madagascar*,Madagascar,4.339,2.148,0.67,0.645,0.378,3
+Egypt,Egypt,4.288,0.856,1.388,0.732,0.548,1
+Chad*,Chad,4.251,2.419,0.662,0.506,0.225,3
+Ethiopia,Ethiopia,4.241,1.375,0.788,0.809,0.457,1
+Yemen*,Yemen,4.197,1.561,0.691,1.043,0.384,1
+Mauritania*,Mauritania,4.153,1.207,1.1,0.865,0.45,1
+Jordan,Jordan,4.152,0.695,1.324,0.724,0.675,1
+Togo,Togo,4.112,2.061,0.771,0.322,0.36,3
+India,India,3.777,0.795,1.167,0.376,0.471,1
+Zambia,Zambia,3.76,1.135,0.93,0.577,0.306,1
+Malawi,Malawi,3.75,1.661,0.648,0.279,0.388,3
+Tanzania,Tanzania,3.702,0.735,0.848,0.597,0.425,1
+Sierra Leone,Sierra Leone,3.574,1.556,0.686,0.416,0.273,1
+Lesotho*,Lesotho,3.512,1.312,0.839,0.848,0,1
+Botswana*,Botswana,3.471,0.187,1.503,0.815,0.28,1
+Rwanda*,Rwanda,3.268,0.536,0.785,0.133,0.462,1
+Zimbabwe,Zimbabwe,2.995,0.548,0.947,0.69,0.27,1
+Lebanon,Lebanon,2.955,0.216,1.392,0.498,0.631,1
+Afghanistan,Afghanistan,2.404,1.263,0.758,0,0.289,1
