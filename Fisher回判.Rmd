@@ -1,0 +1,138 @@
+---
+title: "Fisher回判"
+author: "saint"
+date: "2022/4/12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rm(list = ls())
+##数据读取
+data = read.csv("World Happiness Report 2022.csv")
+
+##数据标准化
+set = data[,c(3,6,7,8,9)]
+rownames(set)=data[,2]
+set = scale(set)
+n = length(set[,1])
+
+
+##判别结果的读取
+cluseter = read.csv("kmeans.csv")
+
+##提取四个总体
+set1 = set[which(cluseter$cluster == 1),]
+set2 = set[which(cluseter$cluster == 2),]
+set3 = set[which(cluseter$cluster == 3),]
+set4 = set[which(cluseter$cluster == 4),]
+
+
+##############################################
+##方差分析####################################
+##############################################
+E_conclu = function(X){
+  matrix.1  = rep(1,length(X[,1]))
+  t(X)%*%(diag(nrow = length(X[,1]),ncol = length(X[,1]))-1/n*matrix.1%*%t(matrix.1))%*%X
+}
+
+E = E_conclu(set1)+
+  E_conclu(set2)+
+  E_conclu(set3)+
+  E_conclu(set4)
+
+X_bar_conclu = function(X){
+  matrix.1  = rep(1,length(X[,1]))
+  t(X)%*%matrix.1/length(X[,1])
+}
+
+x_bar_total = X_bar_conclu(set)
+
+A = length(set1[,1])*(X_bar_conclu(set1)-x_bar_total)%*%t((X_bar_conclu(set1)-x_bar_total))+
+  length(set2[,1])*(X_bar_conclu(set2)-x_bar_total)%*%t((X_bar_conclu(set2)-x_bar_total))+
+  length(set3[,1])*(X_bar_conclu(set3)-x_bar_total)%*%t((X_bar_conclu(set3)-x_bar_total))+
+  length(set4[,1])*(X_bar_conclu(set4)-x_bar_total)%*%t((X_bar_conclu(set4)-x_bar_total))
+
+
+lamda = det(E)/det(E+A)
+
+
+##由方差分析可知，lambda服从于Wilks(5,141,4),可将其转化为卡方分布
+r = 141 - 1/2*(5-4+1)
+
+chi2 = -r*log(lamda)
+
+##chi2近似服从于自由度为5*4=20的卡方分布
+lamda
+chi2
+qchisq(0.95,20)
+
+##############################################
+##Fisher判别分析##############################
+##############################################
+
+C = eigen(solve(E)%*%A)
+C$values
+C$vectors[,c(1,2)]
+c1 = C$vectors[,1]
+c2 = C$vectors[,2]
+
+func1 = function(x){
+  sum(x*c1)
+}
+func2 = function(x){
+  sum(x*c2)
+}
+
+set1 = cbind(set1,data.frame("y1" = apply(set1,1,func1)),data.frame("y2" = apply(set1,1,func2)))
+set2 = cbind(set2,data.frame("y1" = apply(set2,1,func1)),data.frame("y2" = apply(set2,1,func2)))
+set3 = cbind(set3,data.frame("y1" = apply(set3,1,func1)),data.frame("y2" = apply(set3,1,func2)))
+set4 = cbind(set4,data.frame("y1" = apply(set4,1,func1)),data.frame("y2" = apply(set4,1,func2)))
+
+set = cbind(set,data.frame("y1" = apply(set,1,func1)),data.frame("y2" = apply(set,1,func2)))
+
+y11_bar = mean(set1$y1);y21_bar = mean(set1$y2)
+y12_bar = mean(set2$y1);y22_bar = mean(set2$y2)
+y13_bar = mean(set3$y1);y23_bar = mean(set3$y2)
+y14_bar = mean(set4$y1);y24_bar = mean(set4$y2)
+
+
+D1 = function(y){
+  (y[1]-y11_bar)^2*C$values[1]+
+    (y[2]-y21_bar)^2*C$values[2]
+}
+
+D2 = function(y){
+  (y[1]-y12_bar)^2*C$values[1]+
+    (y[2]-y22_bar)^2*C$values[2]
+}
+
+D3 = function(y){
+  (y[1]-y13_bar)^2*C$values[1]+
+    (y[2]-y23_bar)^2*C$values[2]
+}
+
+D4 = function(y){
+  (y[1]-y14_bar)^2*C$values[1]+
+    (y[2]-y24_bar)^2*C$values[2]
+}
+
+Fisher = data.frame(
+  "D1" = apply(set[,c("y1","y2")],1,D1),
+  "D2" = apply(set[,c("y1","y2")],1,D2),
+  "D3" = apply(set[,c("y1","y2")],1,D3),
+  "D4" = apply(set[,c("y1","y2")],1,D4)
+)
+
+Fisher_result = apply(Fisher,1,which.min)
+
+cluseter
+
+check = ifelse(Fisher_result == cluseter,1,0)
+sum(check)/length(check)
+which(Fisher_result != cluseter)
+```
+
